@@ -1,5 +1,6 @@
 package at.saunders.demo.topic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,38 +10,28 @@ import java.util.List;
 @Service
 public class TopicService {
 
-    private List<Topic> topics = new ArrayList<>(Arrays.asList(
-            new Topic("spring", "Spring Framework", "Spring Framework desc"),
-                new Topic("java", "Core Java", "description"),
-                new Topic("javascript", "JavaScript", "description")
-                ));
+    @Autowired
+    private TopicRepository repository;
 
     public List<Topic> getAllTopics() {
+        List<Topic> topics = new ArrayList<>();
+        repository.findAll().forEach(topics::add);
         return topics;
     }
 
     public Topic getTopic(String id) {
-        return topics.stream()
-                .filter(topic -> topic.getId().equals(id))
-                .findFirst().get();
+        return repository.findById(id).get();
     }
 
     public void addTopic(Topic topic) {
-        topics.add(topic);
+        repository.save(topic);
     }
 
     public void updateTopic(String id, Topic newTopic) {
-        Topic oldTopic = getTopic(id);
-        for (int i = 0; i < topics.size(); i++) {
-            Topic topic = topics.get(i);
-            if (topic.getId().equals(id)){
-                topics.set(i, newTopic);
-                return;
-            }
-        }
+        repository.save(newTopic);
     }
 
     public void deleteTopic(String id) {
-        topics.removeIf(topic -> topic.getId().equals(id));
+        repository.deleteById(id);
     }
 }
