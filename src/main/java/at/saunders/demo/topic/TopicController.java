@@ -11,8 +11,12 @@ import java.util.stream.Stream;
 @RestController
 public class TopicController {
 
-    @Autowired
     private TopicService topicService;
+
+    @Autowired
+    public TopicController(TopicService service){
+        this.topicService = service;
+    }
 
     @RequestMapping("/topics")
     public List<Topic> getAllTopics(){
@@ -25,14 +29,14 @@ public class TopicController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/topics")
-    public void addTopic(@RequestBody Topic topic){
-        topicService.addTopic(topic);
+    public Topic addTopic(@RequestBody Topic topic){
+        return topicService.addTopic(topic);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/topics/{id}")
-    public void updateTopic(@RequestBody Topic topic,
+    public Topic updateTopic(@RequestBody Topic topic,
                             @PathVariable String id){
-        topicService.updateTopic(id, topic);
+        return topicService.updateTopic(id, topic);
     }
 
 
